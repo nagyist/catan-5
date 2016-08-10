@@ -5,6 +5,8 @@
 #include "GameFramework/Actor.h"
 #include "HexagonTile.generated.h"
 
+#define k_HalfSqrt3 0.866025404
+
 UCLASS()
 class CATAN_API AHexagonTile : public AActor
 {
@@ -20,6 +22,7 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-	
-	
+    static const int Size = 100;
+    static const int Width = Size * 2;
+    static const int Height = k_HalfSqrt3 * Size;
 };

@@ -15,4 +15,7 @@ class CATAN_API ACatanGameMode : public AGameMode
 	
 public:
     void InitGameState() override;
+
+private:
+    void SpawnMap() const;
 };

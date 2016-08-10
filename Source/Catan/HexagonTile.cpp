@@ -10,7 +10,7 @@ AHexagonTile::AHexagonTile()
     PrimaryActorTick.bCanEverTick = true;
 
     //Asset, Reference Obtained Via Right Click in Editor
-    static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshObj(TEXT("StaticMesh'/Game/HexagonMesh.HexagonMesh'"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshObj(TEXT("StaticMesh'/Game/Models/HexagonMesh.HexagonMesh'"));
 
     UStaticMeshComponent* mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexMesh"));
     mesh->SetStaticMesh(StaticMeshObj.Object);
