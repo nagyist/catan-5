@@ -22,7 +22,8 @@ public:
 	// Called every frame
 	virtual void Tick( float DeltaSeconds ) override;
 
-    static const int Size = 100;
-    static const int Width = Size * 2;
-    static const int Height = k_HalfSqrt3 * Size;
+    static const float Border;
+    static const float Size;
+    static const float Width;
+    static const float Height;
 };
