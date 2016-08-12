@@ -2,28 +2,33 @@
 
 #include "Catan.h"
 #include "CatanGameMode.h"
-#include "HexagonTile.h"
+#include "Hex/HexagonTile.h"
+#include <memory>
+#include "Hex/BoardManager.h"
 
 
 void ACatanGameMode::InitGameState()
 {
     this->SpawnMap();
-    auto actor1 = GetWorld()->SpawnActor<AActor>(AHexagonTile::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+    //auto actor1 = GetWorld()->SpawnActor<AActor>(AHexagonTile::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
     //auto actor2 = GetWorld()->SpawnActor<AActor>(AHexagonTile::StaticClass(), FVector(200, 0, 0), FRotator::ZeroRotator);
 }
 
 void ACatanGameMode::SpawnMap() const
 {
-    const int horizDist = AHexagonTile::Width * 3 / 4;
-    const int vertDist = AHexagonTile::Height;
+    std::unique_ptr<BoardManager> board(new BoardManager());
+    board->SpawnMap(GetWorld());
 
-    UWorld* world = GetWorld();
+    //const int horizDist = AHexagonTile::Width * 3 / 4;
+    //const int vertDist = AHexagonTile::Height;
 
-    for (int i = 0; i < 5; ++i)
-    {
-        for (int j = 0; j < 5; ++j)
-        {
-            world->SpawnActor<AActor>(AHexagonTile::StaticClass(), FVector(i * horizDist, j * vertDist, 0), FRotator::ZeroRotator);
-        }
-    }
+    //UWorld* world = GetWorld();
+
+    //for (int i = 0; i < 5; ++i)
+    //{
+    //    for (int j = 0; j < 5; ++j)
+    //    {
+    //        world->SpawnActor<AActor>(AHexagonTile::StaticClass(), FVector(i * horizDist, j * vertDist, 0), FRotator::ZeroRotator);
+    //    }
+    //}
 }

@@ -43,6 +43,18 @@ void AHexagonTile::Tick( float DeltaTime )
 
 }
 
+void AHexagonTile::SetCoordinates(int q, int r, int s)
+{
+    this->cubeCoords.X = q;
+    this->cubeCoords.Y = r;
+    this->cubeCoords.Z = s;
+}
+
+FVector AHexagonTile::GetCoordinates() const
+{
+    return this->cubeCoords;
+}
+
 const float AHexagonTile::Border = 0;
 const float AHexagonTile::Size = 100;
 const float AHexagonTile::Width = Size * 2 + Border * 2;

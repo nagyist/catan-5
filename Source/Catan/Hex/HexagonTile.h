@@ -26,4 +26,10 @@ public:
     static const float Size;
     static const float Width;
     static const float Height;
+
+    void SetCoordinates(int q, int r, int s);
+    FVector GetCoordinates() const;
+
+private:
+    FVector cubeCoords;
 };
