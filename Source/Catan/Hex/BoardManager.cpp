@@ -26,9 +26,9 @@ void BoardManager::SpawnMap(UWorld* world) const
                 FVector2D translation = PointOrientation.TransformVector(*hex.get());
                 translation.X = translation.X * AHexagonTile::Size;
                 translation.Y = translation.Y * AHexagonTile::Size;
-                wchar_t buffer[100];
+                /*wchar_t buffer[100];
                 swprintf_s(buffer, L"X: %f, Y: %f, tX: %f, tY: %f", hex->X, hex->Y, translation.X, translation.Y);
-                GEngine->AddOnScreenDebugMessage(-1, 50, FColor::Red, *FString(buffer));
+                GEngine->AddOnScreenDebugMessage(-1, 50, FColor::Red, *FString(buffer));*/
                 world->SpawnActor<AActor>(AHexagonTile::StaticClass(), FVector(translation, 0), FRotator::ZeroRotator);
             }
         }
