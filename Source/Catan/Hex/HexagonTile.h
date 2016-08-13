@@ -24,8 +24,6 @@ public:
 
     static const float Border;
     static const float Size;
-    static const float Width;
-    static const float Height;
 
     void SetCoordinates(int q, int r, int s);
     FVector GetCoordinates() const;

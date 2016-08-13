@@ -56,6 +56,5 @@ FVector AHexagonTile::GetCoordinates() const
 }
 
 const float AHexagonTile::Border = 0;
-const float AHexagonTile::Size = 100;
-const float AHexagonTile::Width = Size * 2 + Border * 2;
-const float AHexagonTile::Height = k_HalfSqrt3 * Width + Border * 2;
+// 10px border
+const float AHexagonTile::Size = 100 + 10;

@@ -23,7 +23,7 @@ void BoardManager::SpawnMap(UWorld* world) const
         {
             if (hex != nullptr)
             {
-                FVector2D translation = FlatOrientation.TransformVector(*hex.get());
+                FVector2D translation = PointOrientation.TransformVector(*hex.get());
                 translation.X = translation.X * AHexagonTile::Size;
                 translation.Y = translation.Y * AHexagonTile::Size;
                 wchar_t buffer[100];
