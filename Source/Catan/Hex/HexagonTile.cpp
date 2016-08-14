@@ -33,6 +33,31 @@ AHexagonTile::AHexagonTile()
     mesh->SetStaticMesh(EdgeMesh.Object);
     //mesh->AddLocalRotation(FRotator(0, 60, 0));
     mesh->SetupAttachment(RootComponent);
+
+    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge2"));
+    mesh->SetStaticMesh(EdgeMesh.Object);
+    mesh->AddLocalRotation(FRotator(0, 60, 0));
+    mesh->SetupAttachment(RootComponent);
+
+    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge3"));
+    mesh->SetStaticMesh(EdgeMesh.Object);
+    mesh->AddLocalRotation(FRotator(0, 120, 0));
+    mesh->SetupAttachment(RootComponent);
+
+    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge4"));
+    mesh->SetStaticMesh(EdgeMesh.Object);
+    mesh->AddLocalRotation(FRotator(0, 180, 0));
+    mesh->SetupAttachment(RootComponent);
+
+    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge5"));
+    mesh->SetStaticMesh(EdgeMesh.Object);
+    mesh->AddLocalRotation(FRotator(0, 240, 0));
+    mesh->SetupAttachment(RootComponent);
+
+    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge6"));
+    mesh->SetStaticMesh(EdgeMesh.Object);
+    mesh->AddLocalRotation(FRotator(0, 300, 0));
+    mesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
