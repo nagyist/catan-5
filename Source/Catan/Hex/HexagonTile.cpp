@@ -11,22 +11,28 @@ AHexagonTile::AHexagonTile()
 
     //Asset, Reference Obtained Via Right Click in Editor
     static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshObj(TEXT("StaticMesh'/Game/Models/HexagonMesh.HexagonMesh'"));
+    static ConstructorHelpers::FObjectFinder<UStaticMesh> EdgeMesh(TEXT("StaticMesh'/Game/Models/hexedge.hexedge'"));
 
     UStaticMeshComponent* mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexMesh"));
     mesh->SetStaticMesh(StaticMeshObj.Object);
 
-    mesh->bOwnerNoSee = false;
-    mesh->bCastDynamicShadow = true;
-    mesh->CastShadow = true;
-    mesh->BodyInstance.SetObjectType(ECC_WorldDynamic);
-    mesh->BodyInstance.SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    mesh->BodyInstance.SetResponseToAllChannels(ECR_Ignore);
-    mesh->BodyInstance.SetResponseToChannel(ECC_WorldStatic, ECR_Block);
-    mesh->BodyInstance.SetResponseToChannel(ECC_WorldDynamic, ECR_Block);
-    mesh->BodyInstance.SetResponseToChannel(ECC_Pawn, ECR_Block);
-    mesh->SetHiddenInGame(false);
+    //mesh->bOwnerNoSee = false;
+    //mesh->bCastDynamicShadow = true;
+    //mesh->CastShadow = true;
+    //mesh->BodyInstance.SetObjectType(ECC_WorldDynamic);
+    //mesh->BodyInstance.SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+    //mesh->BodyInstance.SetResponseToAllChannels(ECR_Ignore);
+    //mesh->BodyInstance.SetResponseToChannel(ECC_WorldStatic, ECR_Block);
+    //mesh->BodyInstance.SetResponseToChannel(ECC_WorldDynamic, ECR_Block);
+    //mesh->BodyInstance.SetResponseToChannel(ECC_Pawn, ECR_Block);
+    //mesh->SetHiddenInGame(false);
 
     RootComponent = mesh;
+
+    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge1"));
+    mesh->SetStaticMesh(EdgeMesh.Object);
+    //mesh->AddLocalRotation(FRotator(0, 60, 0));
+    mesh->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
