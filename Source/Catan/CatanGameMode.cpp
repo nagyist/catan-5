@@ -17,5 +17,5 @@ void ACatanGameMode::InitGameState()
 void ACatanGameMode::SpawnMap() const
 {
     std::unique_ptr<BoardManager> board(new BoardManager());
-    board->SpawnMap(GetWorld());
+    board->BuildMap(GetWorld());
 }

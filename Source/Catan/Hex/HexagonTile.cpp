@@ -15,49 +15,37 @@ AHexagonTile::AHexagonTile()
 
     UStaticMeshComponent* mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexMesh"));
     mesh->SetStaticMesh(StaticMeshObj.Object);
-
-    //mesh->bOwnerNoSee = false;
-    //mesh->bCastDynamicShadow = true;
-    //mesh->CastShadow = true;
-    //mesh->BodyInstance.SetObjectType(ECC_WorldDynamic);
-    //mesh->BodyInstance.SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
-    //mesh->BodyInstance.SetResponseToAllChannels(ECR_Ignore);
-    //mesh->BodyInstance.SetResponseToChannel(ECC_WorldStatic, ECR_Block);
-    //mesh->BodyInstance.SetResponseToChannel(ECC_WorldDynamic, ECR_Block);
-    //mesh->BodyInstance.SetResponseToChannel(ECC_Pawn, ECR_Block);
-    //mesh->SetHiddenInGame(false);
-
     RootComponent = mesh;
 
-    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge1"));
-    mesh->SetStaticMesh(EdgeMesh.Object);
-    //mesh->AddLocalRotation(FRotator(0, 60, 0));
-    mesh->SetupAttachment(RootComponent);
+    this->edges_[0] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge1"));
+    this->edges_[0]->SetStaticMesh(EdgeMesh.Object);
+    //this->edges_[0]->AddLocalRotation(FRotator(0, 60, 0));
+    this->edges_[0]->SetupAttachment(RootComponent);
 
-    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge2"));
-    mesh->SetStaticMesh(EdgeMesh.Object);
-    mesh->AddLocalRotation(FRotator(0, 60, 0));
-    mesh->SetupAttachment(RootComponent);
+    this->edges_[1] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge2"));
+    this->edges_[1]->SetStaticMesh(EdgeMesh.Object);
+    this->edges_[1]->AddLocalRotation(FRotator(0, 60, 0));
+    this->edges_[1]->SetupAttachment(RootComponent);
 
-    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge3"));
-    mesh->SetStaticMesh(EdgeMesh.Object);
-    mesh->AddLocalRotation(FRotator(0, 120, 0));
-    mesh->SetupAttachment(RootComponent);
+    this->edges_[2] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge3"));
+    this->edges_[2]->SetStaticMesh(EdgeMesh.Object);
+    this->edges_[2]->AddLocalRotation(FRotator(0, 120, 0));
+    this->edges_[2]->SetupAttachment(RootComponent);
 
-    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge4"));
-    mesh->SetStaticMesh(EdgeMesh.Object);
-    mesh->AddLocalRotation(FRotator(0, 180, 0));
-    mesh->SetupAttachment(RootComponent);
+    this->edges_[3] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge4"));
+    this->edges_[3]->SetStaticMesh(EdgeMesh.Object);
+    this->edges_[3]->AddLocalRotation(FRotator(0, 180, 0));
+    this->edges_[3]->SetupAttachment(RootComponent);
 
-    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge5"));
-    mesh->SetStaticMesh(EdgeMesh.Object);
-    mesh->AddLocalRotation(FRotator(0, 240, 0));
-    mesh->SetupAttachment(RootComponent);
+    this->edges_[4] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge5"));
+    this->edges_[4]->SetStaticMesh(EdgeMesh.Object);
+    this->edges_[4]->AddLocalRotation(FRotator(0, 240, 0));
+    this->edges_[4]->SetupAttachment(RootComponent);
 
-    mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge6"));
-    mesh->SetStaticMesh(EdgeMesh.Object);
-    mesh->AddLocalRotation(FRotator(0, 300, 0));
-    mesh->SetupAttachment(RootComponent);
+    this->edges_[5] = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Edge6"));
+    this->edges_[5]->SetStaticMesh(EdgeMesh.Object);
+    this->edges_[5]->AddLocalRotation(FRotator(0, 300, 0));
+    this->edges_[5]->SetupAttachment(RootComponent);
 }
 
 // Called when the game starts or when spawned
@@ -74,16 +62,14 @@ void AHexagonTile::Tick( float DeltaTime )
 
 }
 
-void AHexagonTile::SetCoordinates(int q, int r, int s)
+void AHexagonTile::SetCoordinates(const FVector& cubecoordinates)
 {
-    this->cubeCoords.X = q;
-    this->cubeCoords.Y = r;
-    this->cubeCoords.Z = s;
+    cubeCoordinates_ = cubecoordinates;
 }
 
 FVector AHexagonTile::GetCoordinates() const
 {
-    return this->cubeCoords;
+    return this->cubeCoordinates_;
 }
 
 const float AHexagonTile::Border = 0;
