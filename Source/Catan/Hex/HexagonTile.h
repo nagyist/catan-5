@@ -30,5 +30,4 @@ public:
 
 private:
     FVector cubeCoordinates_;
-    UStaticMeshComponent* edges_[6];
 };

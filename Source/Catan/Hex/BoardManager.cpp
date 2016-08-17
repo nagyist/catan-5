@@ -53,11 +53,13 @@ void BoardManager::BuildRoads(const AHexagonTile& tile, UWorld* world)
 {
     for (int i = 0; i < 6; ++i)
     {
-        auto address = std::make_pair(tile.GetCoordinates(), HexUtils::GetNeighbor(tile.GetCoordinates(), i));
+        auto address = HexUtils::GetEdge(tile.GetCoordinates(), i);
         if (roads_.find(address) == roads_.end())
         {
-            auto road = world->SpawnActor<ARoad>(ARoad::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
-            // TODO: Set edges on road
+            FVector2D translation = PointOrientation.TransformVector(HexUtils::AxialCoord(address));
+            translation.X = translation.X * AHexagonTile::Size;
+            translation.Y = translation.Y * AHexagonTile::Size;
+            auto road = world->SpawnActor<ARoad>(ARoad::StaticClass(), FVector(translation, 0), FRotator(0, -60 * i, 0));
             roads_[address] = road;
         }
     }

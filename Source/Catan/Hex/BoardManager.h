@@ -41,25 +41,6 @@ private:
         }
     };
 
-    struct PairFVectorHash
-    {
-        std::size_t operator()(const std::pair<FVector, FVector> p) const
-        {
-            FVectorHash hash;
-            std::size_t result = hash(p.first);
-            result = (result * 397) ^ hash(p.second);
-            return result;
-        }
-    };
-
-    struct PairFVectorEqual
-    {
-        bool operator()(const std::pair<FVector, FVector>& lhs, const std::pair<FVector, FVector>& rhs) const
-        {
-            return lhs.first.Equals(rhs.first) && lhs.second.Equals(rhs.second);
-        }
-    };
-
     std::unordered_map < FVector, AHexagonTile*, FVectorHash, FVectorEqual> tiles_;
-    std::unordered_map < std::pair<FVector, FVector>, ARoad*, PairFVectorHash, PairFVectorEqual> roads_;
+    std::unordered_map < FVector, ARoad*, FVectorHash, FVectorEqual> roads_;
 };

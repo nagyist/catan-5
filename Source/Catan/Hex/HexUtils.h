@@ -8,12 +8,13 @@
 class CATAN_API HexUtils
 {
 public:
-    static FVector2D AxialCoord(FVector cube);
-    static FVector CubeCoord(FVector2D axial);
+    static FVector2D AxialCoord(const FVector& cube);
+    static FVector CubeCoord(const FVector2D& axial);
     static FVector GetCubeDirection(int direction);
     static FVector2D GetAxialDirection(int direction);
-    static FVector2D GetNeighbor(FVector2D hex, int direction);
-    static FVector GetNeighbor(FVector hex, int direction);
+    static FVector2D GetNeighbor(const FVector2D& hex, int direction);
+    static FVector GetNeighbor(const FVector& hex, int direction);
+    static FVector GetEdge(const FVector& hex, int direction);
 
 private:
     HexUtils();

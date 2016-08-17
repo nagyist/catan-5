@@ -3,12 +3,12 @@
 #include "Catan.h"
 #include "HexUtils.h"
 
-FVector2D HexUtils::AxialCoord(FVector cube)
+FVector2D HexUtils::AxialCoord(const FVector& cube)
 {
     return FVector2D(cube.X, cube.Z);
 }
 
-FVector HexUtils::CubeCoord(FVector2D axial)
+FVector HexUtils::CubeCoord(const FVector2D& axial)
 {
     return FVector(axial.X, -axial.X - axial.Y, axial.Y);
 }
@@ -23,14 +23,20 @@ FVector2D HexUtils::GetAxialDirection(int direction)
     return axialDirs[direction];
 }
 
-FVector2D HexUtils::GetNeighbor(FVector2D hex, int direction)
+FVector2D HexUtils::GetNeighbor(const FVector2D &hex, int direction)
 {
     return hex + GetAxialDirection(direction);
 }
 
-FVector HexUtils::GetNeighbor(FVector hex, int direction)
+FVector HexUtils::GetNeighbor(const FVector& hex, int direction)
 {
     return hex + GetCubeDirection(direction);
+}
+
+FVector HexUtils::GetEdge(const FVector& hex, int direction)
+{
+    auto neighbor = HexUtils::GetNeighbor(hex, direction);
+    return (neighbor + hex) / 2;
 }
 
 HexUtils::HexUtils()

@@ -16,14 +16,7 @@ public:
 
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-	
-	// Called every frame
-	virtual void Tick( float DeltaSeconds ) override;
-
-    void SetEdge(UStaticMeshComponent* edge);
 
 private:
-    UStaticMeshComponent* pEdge1 = nullptr;
-    UStaticMeshComponent* pEdge2 = nullptr;
-	
+    UStaticMeshComponent* mesh_ = nullptr;
 };
