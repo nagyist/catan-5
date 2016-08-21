@@ -11,6 +11,8 @@ AHexagonTile::AHexagonTile()
 
     //Asset, Reference Obtained Via Right Click in Editor
     static ConstructorHelpers::FObjectFinder<UStaticMesh> StaticMeshObj(TEXT("StaticMesh'/Game/Models/HexagonMesh.HexagonMesh'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> StaticBrickMat(TEXT("Material'/Game/Textures/Hills.Hills'"));
+    this->pBrickMat_ = StaticBrickMat.Object;
 
     UStaticMeshComponent* mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("HexMesh"));
     mesh->SetStaticMesh(StaticMeshObj.Object);
@@ -29,6 +31,17 @@ void AHexagonTile::Tick( float DeltaTime )
 {
 	Super::Tick( DeltaTime );
 
+}
+
+void AHexagonTile::SetResourceType(ResourceType type)
+{
+    switch (type)
+    {
+    case ResourceType::Brick:
+        {
+        dynamic_cast<UStaticMeshComponent*>(RootComponent)->SetMaterial(0, pBrickMat_);
+        }
+    }
 }
 
 void AHexagonTile::SetCoordinates(const FVector& cubecoordinates)

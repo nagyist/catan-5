@@ -3,6 +3,7 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "ResourceType.h"
 #include "HexagonTile.generated.h"
 
 #define k_HalfSqrt3 0.866025404
@@ -25,9 +26,12 @@ public:
     static const float Border;
     static const float Size;
 
+    void SetResourceType(ResourceType type);
+
     void SetCoordinates(const FVector& cubeCoordinates);
     FVector GetCoordinates() const;
 
 private:
     FVector cubeCoordinates_;
+    UMaterial* pBrickMat_;
 };

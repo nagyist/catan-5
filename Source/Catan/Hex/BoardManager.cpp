@@ -41,6 +41,7 @@ void BoardManager::BuildMap(UWorld* world)
             swprintf_s(buffer, L"X: %f, Y: %f, tX: %f, tY: %f", hex->X, hex->Y, translation.X, translation.Y);
             GEngine->AddOnScreenDebugMessage(-1, 50, FColor::Red, *FString(buffer));*/
             auto tile = world->SpawnActor<AHexagonTile>(AHexagonTile::StaticClass(), FVector(translation, 0), FRotator::ZeroRotator);
+            tile->SetResourceType(ResourceType::Brick);
             tile->SetCoordinates(cubecoordinate);
             tiles_[cubecoordinate] = tile;
 
