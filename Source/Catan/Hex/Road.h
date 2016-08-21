@@ -17,6 +17,9 @@ public:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+    UFUNCTION()
+    void OnRoadClicked();
+
 private:
     UStaticMeshComponent* mesh_ = nullptr;
 };
