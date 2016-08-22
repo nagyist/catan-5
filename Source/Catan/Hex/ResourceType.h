@@ -4,6 +4,7 @@
 
 enum ResourceType
 {
+    Desert = -2,
     Unknown = -1,
     Brick,
     Wood,

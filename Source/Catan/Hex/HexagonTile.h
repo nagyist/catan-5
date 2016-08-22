@@ -34,4 +34,9 @@ public:
 private:
     FVector cubeCoordinates_;
     UMaterial* pBrickMat_;
+    UMaterial* pOreMat_;
+    UMaterial* pWoolMat_;
+    UMaterial* pWheatMat_;
+    UMaterial* pWoodMat_;
+    UMaterial* pDesertMat_;
 };

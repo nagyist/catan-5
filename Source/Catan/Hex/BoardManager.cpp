@@ -1,6 +1,10 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Catan.h"
+#include <algorithm>
+#include <random>
+#include <chrono>
+
 #include "BoardManager.h"
 #include "HexagonTile.h"
 #include "Road.h"
@@ -9,6 +13,33 @@
 
 BoardManager::BoardManager()
 {
+    remaining_resources_[0] = ResourceType::Brick;
+    remaining_resources_[1] = ResourceType::Brick;
+    remaining_resources_[2] = ResourceType::Brick;
+
+    remaining_resources_[3] = ResourceType::Ore;
+    remaining_resources_[4] = ResourceType::Ore;
+    remaining_resources_[5] = ResourceType::Ore;
+
+    remaining_resources_[6] = ResourceType::Wheat;
+    remaining_resources_[7] = ResourceType::Wheat;
+    remaining_resources_[8] = ResourceType::Wheat;
+    remaining_resources_[9] = ResourceType::Wheat;
+
+    remaining_resources_[10] = ResourceType::Wood;
+    remaining_resources_[11] = ResourceType::Wood;
+    remaining_resources_[12] = ResourceType::Wood;
+    remaining_resources_[13] = ResourceType::Wood;
+
+    remaining_resources_[14] = ResourceType::Wool;
+    remaining_resources_[15] = ResourceType::Wool;
+    remaining_resources_[16] = ResourceType::Wool;
+    remaining_resources_[17] = ResourceType::Wool;
+
+    remaining_resources_[18] = ResourceType::Desert;
+
+    auto rand = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
+    std::shuffle(remaining_resources_.begin(), remaining_resources_.end(), rand);
 }
 
 BoardManager::~BoardManager()
@@ -17,6 +48,7 @@ BoardManager::~BoardManager()
 
 void BoardManager::BuildMap(UWorld* world)
 {
+    int tile_index = 0;
     for (int j = 0, r = -2; j < 5; ++j, ++r)
     {
         for (int i = 0, q = -2; i < 5; ++i, ++q)
@@ -41,7 +73,7 @@ void BoardManager::BuildMap(UWorld* world)
             swprintf_s(buffer, L"X: %f, Y: %f, tX: %f, tY: %f", hex->X, hex->Y, translation.X, translation.Y);
             GEngine->AddOnScreenDebugMessage(-1, 50, FColor::Red, *FString(buffer));*/
             auto tile = world->SpawnActor<AHexagonTile>(AHexagonTile::StaticClass(), FVector(translation, 0), FRotator::ZeroRotator);
-            tile->SetResourceType(ResourceType::Brick);
+            tile->SetResourceType(remaining_resources_[tile_index++]);
             tile->SetCoordinates(cubecoordinate);
             tiles_[cubecoordinate] = tile;
 

@@ -3,6 +3,8 @@
 #pragma once
 #include <memory>
 #include <unordered_map>
+#include <array>
+#include "ResourceType.h"
 
 
 class ARoad;
@@ -43,4 +45,5 @@ private:
 
     std::unordered_map < FVector, AHexagonTile*, FVectorHash, FVectorEqual> tiles_;
     std::unordered_map < FVector, ARoad*, FVectorHash, FVectorEqual> roads_;
+    std::array<ResourceType, 19> remaining_resources_;
 };
