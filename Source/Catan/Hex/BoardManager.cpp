@@ -13,6 +13,57 @@
 
 BoardManager::BoardManager()
 {
+    RandomizeResources();
+    RandomizeNumberTokens();
+}
+
+BoardManager::~BoardManager()
+{
+}
+
+void BoardManager::BuildMap(UWorld* world)
+{
+    int tile_index = 0;
+    int number_token_index = 0;
+    for (int j = 0, r = -2; j < 5; ++j, ++r)
+    {
+        for (int i = 0, q = -2; i < 5; ++i, ++q)
+        {
+            if ((j == 0 && i == 0) ||
+                (j == 0 && i == 1) ||
+                (j == 1 && i == 0) ||
+                (j == 3 && i == 4) ||
+                (j == 4 && i == 3) ||
+                (j == 4 && i == 4))
+            {
+                continue;
+            }
+
+            auto axialcoordinate = FVector2D(q, r);
+            auto cubecoordinate = HexUtils::CubeCoord(axialcoordinate);
+
+            FVector2D translation = PointOrientation.TransformVector(axialcoordinate);
+            translation.X = translation.X * AHexagonTile::Size;
+            translation.Y = translation.Y * AHexagonTile::Size;
+            /*wchar_t buffer[100];
+            swprintf_s(buffer, L"X: %f, Y: %f, tX: %f, tY: %f", hex->X, hex->Y, translation.X, translation.Y);
+            GEngine->AddOnScreenDebugMessage(-1, 50, FColor::Red, *FString(buffer));*/
+            auto tile = world->SpawnActor<AHexagonTile>(AHexagonTile::StaticClass(), FVector(translation, 0), FRotator::ZeroRotator);
+            tile->SetResourceType(remaining_resources_[tile_index++]);
+            tile->SetCoordinates(cubecoordinate);
+            if (tile->GetResourceType() != Desert)
+            {
+                tile->SetDiceRollValue(numbertokens_[number_token_index++]);
+            }
+            tiles_[cubecoordinate] = tile;
+
+            BuildRoads(*tile, world);
+        }
+    }
+}
+
+void BoardManager::RandomizeResources()
+{
     remaining_resources_[0] = ResourceType::Brick;
     remaining_resources_[1] = ResourceType::Brick;
     remaining_resources_[2] = ResourceType::Brick;
@@ -42,44 +93,19 @@ BoardManager::BoardManager()
     std::shuffle(remaining_resources_.begin(), remaining_resources_.end(), rand);
 }
 
-BoardManager::~BoardManager()
+void BoardManager::RandomizeNumberTokens()
 {
-}
-
-void BoardManager::BuildMap(UWorld* world)
-{
-    int tile_index = 0;
-    for (int j = 0, r = -2; j < 5; ++j, ++r)
+    numbertokens_[0] = 2;
+    for (int i = 1; i < (6 - 2) * 2 + 1; i++)
     {
-        for (int i = 0, q = -2; i < 5; ++i, ++q)
-        {
-            if ((j == 0 && i == 0) ||
-                (j == 0 && i == 1) ||
-                (j == 1 && i == 0) ||
-                (j == 3 && i == 4) ||
-                (j == 4 && i == 3) ||
-                (j == 4 && i == 4))
-            {
-                continue;
-            }
-
-            auto axialcoordinate = FVector2D(q, r);
-            auto cubecoordinate = HexUtils::CubeCoord(axialcoordinate);
-
-            FVector2D translation = PointOrientation.TransformVector(axialcoordinate);
-            translation.X = translation.X * AHexagonTile::Size;
-            translation.Y = translation.Y * AHexagonTile::Size;
-            /*wchar_t buffer[100];
-            swprintf_s(buffer, L"X: %f, Y: %f, tX: %f, tY: %f", hex->X, hex->Y, translation.X, translation.Y);
-            GEngine->AddOnScreenDebugMessage(-1, 50, FColor::Red, *FString(buffer));*/
-            auto tile = world->SpawnActor<AHexagonTile>(AHexagonTile::StaticClass(), FVector(translation, 0), FRotator::ZeroRotator);
-            tile->SetResourceType(remaining_resources_[tile_index++]);
-            tile->SetCoordinates(cubecoordinate);
-            tiles_[cubecoordinate] = tile;
-
-            BuildRoads(*tile, world);
-        }
+        numbertokens_[i] = (i - 1) / 2 + 3;
     }
+
+     for (int i = (6 - 2) * 2 + 1; i < 17; i++)
+     {
+         numbertokens_[i] = (i - 1) / 2 + 4;
+     }
+    numbertokens_[17] = 12;
 }
 
 void BoardManager::BuildRoads(const AHexagonTile& tile, UWorld* world)

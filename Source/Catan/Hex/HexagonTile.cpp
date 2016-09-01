@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Catan.h"
+#include "AssertionMacros.h"
 #include "HexagonTile.h"
 
 // Sets default values
@@ -10,15 +11,15 @@ AHexagonTile::AHexagonTile()
     PrimaryActorTick.bCanEverTick = true;
 
     //Asset, Reference Obtained Via Right Click in Editor
-    static ConstructorHelpers::FObjectFinder<UMaterial> StaticBrickMat(TEXT("Material'/Game/Textures/Hills.Hills'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> StaticBrickMat(TEXT("Material'/Game/Textures/Brick.Brick'"));
     this->pBrickMat_ = StaticBrickMat.Object;
-    static ConstructorHelpers::FObjectFinder<UMaterial> StaticOreMat(TEXT("Material'/Game/Textures/Mountains.Mountains'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> StaticOreMat(TEXT("Material'/Game/Textures/Ore.Ore'"));
     this->pOreMat_ = StaticOreMat.Object;
-    static ConstructorHelpers::FObjectFinder<UMaterial> StaticWoolMat(TEXT("Material'/Game/Textures/Grasslands.Grasslands'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> StaticWoolMat(TEXT("Material'/Game/Textures/Wool.Wool'"));
     this->pWoolMat_ = StaticWoolMat.Object;
-    static ConstructorHelpers::FObjectFinder<UMaterial> StaticWheatMat(TEXT("Material'/Game/Textures/Plains.Plains'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> StaticWheatMat(TEXT("Material'/Game/Textures/Wheat.Wheat'"));
     this->pWheatMat_ = StaticWheatMat.Object;
-    static ConstructorHelpers::FObjectFinder<UMaterial> StaticWoodMat(TEXT("Material'/Game/Textures/Woods.Woods'"));
+    static ConstructorHelpers::FObjectFinder<UMaterial> StaticWoodMat(TEXT("Material'/Game/Textures/Wood.Wood'"));
     this->pWoodMat_ = StaticWoodMat.Object;
     static ConstructorHelpers::FObjectFinder<UMaterial> StaticDesertMat(TEXT("Material'/Game/Textures/Desert.Desert'"));
     this->pDesertMat_ = StaticDesertMat.Object;
@@ -66,18 +67,27 @@ void AHexagonTile::SetResourceType(ResourceType type)
         dynamic_cast<UStaticMeshComponent*>(RootComponent)->SetMaterial(0, pDesertMat_);
         break;
     default:
-        break;
+        UE_LOG(LogTemp, Error, TEXT("Unrecognized resource type %d"), static_cast<int>(type));
+        return;
     }
+
+    resource_ = type;
 }
 
-void AHexagonTile::SetCoordinates(const FVector& cubecoordinates)
+ResourceType AHexagonTile::GetResourceType() const
 {
-    cubeCoordinates_ = cubecoordinates;
+    return resource_;
 }
 
-FVector AHexagonTile::GetCoordinates() const
+void AHexagonTile::SetDiceRollValue(uint16 roll)
 {
-    return this->cubeCoordinates_;
+    check(roll > 1 && roll <= 12);
+    diceroll_ = roll;
+}
+
+uint16 AHexagonTile::GetDiceRollValue() const
+{
+    return diceroll_;
 }
 
 const float AHexagonTile::Border = 0;

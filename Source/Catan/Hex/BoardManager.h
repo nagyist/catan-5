@@ -17,11 +17,13 @@ class CATAN_API BoardManager
 {
 public:
 	BoardManager();
-	~BoardManager();
+    ~BoardManager();
 
     void BuildMap(UWorld* world);
 
 private:
+    void RandomizeResources();
+    void RandomizeNumberTokens();
     void BuildRoads(const AHexagonTile& tile, UWorld* world);
 
     struct FVectorHash
@@ -45,5 +47,7 @@ private:
 
     std::unordered_map < FVector, AHexagonTile*, FVectorHash, FVectorEqual> tiles_;
     std::unordered_map < FVector, ARoad*, FVectorHash, FVectorEqual> roads_;
+
     std::array<ResourceType, 19> remaining_resources_;
+    std::array<uint16, 18> numbertokens_;
 };

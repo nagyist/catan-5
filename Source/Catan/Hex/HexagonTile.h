@@ -4,12 +4,11 @@
 
 #include "GameFramework/Actor.h"
 #include "ResourceType.h"
+#include "../Map/MapPiece.h"
 #include "HexagonTile.generated.h"
 
-#define k_HalfSqrt3 0.866025404
-
 UCLASS()
-class CATAN_API AHexagonTile : public AActor
+class CATAN_API AHexagonTile : public AMapPiece
 {
 	GENERATED_BODY()
 	
@@ -27,16 +26,19 @@ public:
     static const float Size;
 
     void SetResourceType(ResourceType type);
+    ResourceType GetResourceType() const;
 
-    void SetCoordinates(const FVector& cubeCoordinates);
-    FVector GetCoordinates() const;
+    void SetDiceRollValue(uint16 roll);
+    uint16 GetDiceRollValue() const;
 
 private:
-    FVector cubeCoordinates_;
     UMaterial* pBrickMat_;
     UMaterial* pOreMat_;
     UMaterial* pWoolMat_;
     UMaterial* pWheatMat_;
     UMaterial* pWoodMat_;
     UMaterial* pDesertMat_;
+
+    ResourceType resource_;
+    uint16 diceroll_;
 };
