@@ -13,7 +13,12 @@ class CATAN_API ACatanPlayerController : public APlayerController
 {
     GENERATED_BODY()
 
-    ACatanPlayerController();
-	
-	
+    virtual void BeginPlay() override;
+
+protected:
+    virtual void SetupInputComponent() override;
+
+private:
+    void SelectPressed();
+    void SelectReleased();
 };
