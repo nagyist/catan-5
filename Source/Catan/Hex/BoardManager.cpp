@@ -11,10 +11,11 @@
 #include "Orientation.h"
 #include "HexUtils.h"
 
-BoardManager::BoardManager()
+BoardManager::BoardManager(long long seed)
 {
-    RandomizeResources();
-    RandomizeNumberTokens();
+    auto rand = std::default_random_engine(seed);
+    RandomizeResources(rand);
+    RandomizeNumberTokens(rand);
 }
 
 BoardManager::~BoardManager()
@@ -62,7 +63,7 @@ void BoardManager::BuildMap(UWorld* world)
     }
 }
 
-void BoardManager::RandomizeResources()
+void BoardManager::RandomizeResources(std::default_random_engine& rand)
 {
     remaining_resources_[0] = ResourceType::Brick;
     remaining_resources_[1] = ResourceType::Brick;
@@ -89,11 +90,10 @@ void BoardManager::RandomizeResources()
 
     remaining_resources_[18] = ResourceType::Desert;
 
-    auto rand = std::default_random_engine(std::chrono::system_clock::now().time_since_epoch().count());
     std::shuffle(remaining_resources_.begin(), remaining_resources_.end(), rand);
 }
 
-void BoardManager::RandomizeNumberTokens()
+void BoardManager::RandomizeNumberTokens(std::default_random_engine& rand)
 {
     numbertokens_[0] = 2;
     for (int i = 1; i < (6 - 2) * 2 + 1; i++)
@@ -101,11 +101,13 @@ void BoardManager::RandomizeNumberTokens()
         numbertokens_[i] = (i - 1) / 2 + 3;
     }
 
-     for (int i = (6 - 2) * 2 + 1; i < 17; i++)
-     {
-         numbertokens_[i] = (i - 1) / 2 + 4;
-     }
+    for (int i = (6 - 2) * 2 + 1; i < 17; i++)
+    {
+        numbertokens_[i] = (i - 1) / 2 + 4;
+    }
     numbertokens_[17] = 12;
+
+    std::shuffle(numbertokens_.begin(), numbertokens_.end(), rand);
 }
 
 void BoardManager::BuildRoads(const AHexagonTile& tile, UWorld* world)

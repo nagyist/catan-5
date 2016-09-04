@@ -4,6 +4,7 @@
 #include <memory>
 #include <unordered_map>
 #include <array>
+#include <random>
 #include "ResourceType.h"
 
 
@@ -16,14 +17,14 @@ class AHexagonTile;
 class CATAN_API BoardManager
 {
 public:
-	BoardManager();
+	BoardManager(long long seed);
     ~BoardManager();
 
     void BuildMap(UWorld* world);
 
 private:
-    void RandomizeResources();
-    void RandomizeNumberTokens();
+    void RandomizeResources(std::default_random_engine& rand);
+    void RandomizeNumberTokens(std::default_random_engine& rand);
     void BuildRoads(const AHexagonTile& tile, UWorld* world);
 
     struct FVectorHash
