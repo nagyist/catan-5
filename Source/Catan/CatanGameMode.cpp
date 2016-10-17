@@ -4,23 +4,30 @@
 #include <memory>
 #include <chrono>
 #include "CatanGameMode.h"
+#include "CatanGameState.h"
 #include "Hex/HexagonTile.h"
 #include "Hex/BoardManager.h"
 #include "CatanPlayerController.h"
 #include "CatanPawn.h"
 
-
-void ACatanGameMode::InitGameState()
+ACatanGameMode::ACatanGameMode()
+    : Super()
 {
     this->PlayerControllerClass = ACatanPlayerController::StaticClass();
     this->DefaultPawnClass = ACatanPawn::StaticClass();
-    this->GameStateClass = ACatanGameMode::StaticClass();
+    this->GameStateClass = ACatanGameState::StaticClass();
+}
+
+void ACatanGameMode::InitGameState()
+{
+    AGameMode::InitGameState();
     this->SpawnMap();
 }
 
 void ACatanGameMode::SpawnMap() const
 {
     auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-    std::unique_ptr<BoardManager> board(new BoardManager(seed));
-    board->BuildMap(GetWorld());
+    auto boardmanager = std::make_unique<BoardManager>(seed);
+    boardmanager->BuildMap(GetWorld());
+    this->GetGameState<ACatanGameState>()->boardmanager_ = std::move(boardmanager);
 }

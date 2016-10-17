@@ -63,6 +63,47 @@ void BoardManager::BuildMap(UWorld* world)
     }
 }
 
+/*
+Find the closest HexagonTile based on actor location (as opposed to bounds or collision detection)
+*/
+AHexagonTile* BoardManager::ClosestTile(const FVector& position) const
+{
+    AHexagonTile* closesttile = nullptr;
+    float closestdistance = std::numeric_limits<float>::max();
+    for (auto& tile : this->tiles_) {
+        auto dist = (tile.second->GetActorLocation() - position).Size();
+        if (dist < closestdistance) {
+            closestdistance = dist;
+            closesttile = tile.second;
+        }
+    }
+
+    return closesttile;
+}
+
+ARoad* BoardManager::ClosestRoad(const FVector& position) const
+{
+    return nullptr;
+}
+
+FVector BoardManager::ClosestCorner(const FVector& position) const
+{
+    auto hextile = ClosestTile(position);
+
+    FVector closestcorner;
+    float closestdistance = std::numeric_limits<float>::max();
+    for (int i = 0; i < 6; ++i) {
+        FVector corner = HexUtils::GetCorner(hextile->GetActorLocation(), i);
+        auto dist = (corner - position).Size();
+        if (dist < closestdistance) {
+            closestdistance = dist;
+            closestcorner = corner;
+        }
+    }
+
+    return closestcorner;
+}
+
 void BoardManager::RandomizeResources(std::default_random_engine& rand)
 {
     remaining_resources_[0] = ResourceType::Brick;

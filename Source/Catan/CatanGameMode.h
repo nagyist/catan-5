@@ -11,9 +11,10 @@
 UCLASS()
 class CATAN_API ACatanGameMode : public AGameMode
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 	
 public:
+    ACatanGameMode();
     void InitGameState() override;
 
 private:

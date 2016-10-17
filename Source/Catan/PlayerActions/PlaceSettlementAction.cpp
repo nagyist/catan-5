@@ -3,6 +3,7 @@
 #include "../Map/MapPiece.h"
 #include "../Hex/HexUtils.h"
 #include "../Hex/Orientation.h"
+#include "../CatanGameState.h"
 #include "PlaceSettlementAction.h"
 
 
@@ -23,6 +24,9 @@ void PlaceSettlementAction::OnEnterAction()
 
 void PlaceSettlementAction::DoAction()
 {
+    settlement_ = controller_->GetWorld()->SpawnActor<ASettlement>(ASettlement::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+    this->hittestparams_.ClearIgnoredComponents();
+    this->hittestparams_.AddIgnoredActor(settlement_);
 }
 
 void PlaceSettlementAction::OnMouseMove()
@@ -35,12 +39,15 @@ void PlaceSettlementAction::OnMouseMove()
 
     FHitResult hitresult;
     if (controller_->GetWorld()->LineTraceSingleByChannel(hitresult, cursorlocation, traceend, ECC_Camera, this->hittestparams_)) {
-        auto mappiece = dynamic_cast<AMapPiece*>(hitresult.Actor.Get());
+        auto gamestate = controller_->GetWorld()->GetGameState<ACatanGameState>();
+        auto closestcorner = gamestate->GetBoardManager()->ClosestCorner(hitresult.ImpactPoint);
+        settlement_->SetActorLocation(closestcorner);
+        /*auto mappiece = dynamic_cast<AMapPiece*>(hitresult.Actor.Get());
         auto hexCoords = mappiece->GetCoordinates();
         auto corner = HexUtils::GetCorner(hexCoords, 0);
         auto hexworld = FVector(PointOrientation.TransformVector(HexUtils::AxialCoord(hexCoords)) * 110, 0);
         corner += hexworld;
-        settlement_->SetActorLocation(corner);
+        settlement_->SetActorLocation(corner);*/
     }
 }
 

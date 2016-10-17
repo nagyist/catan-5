@@ -21,6 +21,9 @@ public:
     ~BoardManager();
 
     void BuildMap(UWorld* world);
+    AHexagonTile* ClosestTile(const FVector& position) const;
+    ARoad* ClosestRoad(const FVector& position) const;
+    FVector ClosestCorner(const FVector& position) const;
 
 private:
     void RandomizeResources(std::default_random_engine& rand);
