@@ -3,10 +3,11 @@
 #pragma once
 
 #include "GameFramework/Actor.h"
+#include "../Map/MapPiece.h"
 #include "Road.generated.h"
 
 UCLASS()
-class CATAN_API ARoad : public AActor
+class CATAN_API ARoad : public AMapPiece
 {
 	GENERATED_BODY()
 	
