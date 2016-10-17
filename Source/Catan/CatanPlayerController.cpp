@@ -1,8 +1,22 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Catan.h"
-#include "hex/HexagonTile.h"
+#include "PlayerActions/SelectAction.h"
+#include "PlayerActions/PlaceSettlementAction.h"
 #include "CatanPlayerController.h"
+
+ACatanPlayerController::ACatanPlayerController()
+{
+    this->actions_.emplace(PlayerAction::Select, new SelectAction(this));
+    this->actions_.emplace(PlayerAction::PlaceSettlement, new PlaceSettlementAction(this));
+}
+
+ACatanPlayerController::~ACatanPlayerController()
+{
+    for (auto& action : this->actions_) {
+        delete action.second;
+    }
+}
 
 void ACatanPlayerController::BeginPlay()
 {
@@ -16,37 +30,45 @@ void ACatanPlayerController::SetupInputComponent()
 {
     Super::SetupInputComponent();
     
-    InputComponent->BindAction(TEXT("Select"),
+    InputComponent->BindAction(TEXT("SelectAction"),
         IE_Pressed,
         this,
-        &ACatanPlayerController::SelectPressed);
+        &ACatanPlayerController::DoAction);
 
-    InputComponent->BindAction(TEXT("Select"),
-        IE_Released,
+    InputComponent->BindAction(TEXT("ChangeAction"),
+        IE_Pressed,
         this,
-        &ACatanPlayerController::SelectReleased);
+        &ACatanPlayerController::ToggleAction);
+
+    InputComponent->BindAxis(TEXT("MouseMove"), this, &ACatanPlayerController::MouseMoved);
 }
 
-void ACatanPlayerController::SelectPressed()
+void ACatanPlayerController::DoAction()
 {
-    FVector cursorlocation;
-    FVector cursordirection;
-    DeprojectMousePositionToWorld(cursorlocation, cursordirection);
-    FVector traceend = cursorlocation + cursordirection * 10000;
-
-    FHitResult hitresult;
-    if (GetWorld()->LineTraceSingleByChannel(hitresult, cursorlocation, traceend, ECC_Camera))
-    {
-        UE_LOG(LogTemp, Display, TEXT("Selected %s %s"), *hitresult.Actor->GetName(), *hitresult.ImpactPoint.ToString());
-        auto mappiece = dynamic_cast<AHexagonTile*>(hitresult.Actor.Get());
-        if (mappiece != nullptr)
-        {
-            mappiece->SetResourceType(Desert);
-        }
+    auto action = this->actions_.find(this->current_action_);
+    if (action != this->actions_.end()) {
+        action->second->DoAction();
     }
 }
 
-void ACatanPlayerController::SelectReleased()
+void ACatanPlayerController::ToggleAction()
 {
+    auto action = this->actions_.find(this->current_action_);
+    if (action != this->actions_.end()) {
+        action->second->OnLeaveAction();
+    }
+    this->current_action_ = static_cast<PlayerAction>((static_cast<int>(this->current_action_) + 1) % PlayerAction::NUM_ACTIONS);
+    action = this->actions_.find(this->current_action_);
+    if (action != this->actions_.end()) {
+        action->second->OnEnterAction();
+    }
+    GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Green, PlayerAction_tostring(this->current_action_));
+}
 
+void ACatanPlayerController::MouseMoved(float amt)
+{
+    auto action = this->actions_.find(this->current_action_);
+    if (action != this->actions_.end()) {
+        action->second->OnMouseMove();
+    }
 }

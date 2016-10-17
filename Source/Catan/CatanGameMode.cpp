@@ -14,6 +14,7 @@ void ACatanGameMode::InitGameState()
 {
     this->PlayerControllerClass = ACatanPlayerController::StaticClass();
     this->DefaultPawnClass = ACatanPawn::StaticClass();
+    this->GameStateClass = ACatanGameMode::StaticClass();
     this->SpawnMap();
 }
 
