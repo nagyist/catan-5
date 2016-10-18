@@ -1,4 +1,5 @@
 #include "Catan.h"
+#include <UnrealMathUtility.h>
 #include "../Map/Settlement.h"
 #include "../Map/MapPiece.h"
 #include "../Hex/HexUtils.h"
@@ -32,22 +33,21 @@ void PlaceSettlementAction::DoAction()
 void PlaceSettlementAction::OnMouseMove()
 {
     // TODO: Refactor to common location
+    const FPlane groundplane(FVector(0.f, 0.f, groundplaneheight_), FVector(0.f, 0.f, 1.f));
     FVector cursorlocation;
     FVector cursordirection;
     controller_->DeprojectMousePositionToWorld(cursorlocation, cursordirection);
     FVector traceend = cursorlocation + cursordirection * 10000;
+    auto intersection = FMath::LinePlaneIntersection(cursorlocation, traceend, groundplane);
+    auto gamestate = controller_->GetWorld()->GetGameState<ACatanGameState>();
+    auto closestcorner = gamestate->GetBoardManager()->ClosestCorner(intersection);
 
-    FHitResult hitresult;
-    if (controller_->GetWorld()->LineTraceSingleByChannel(hitresult, cursorlocation, traceend, ECC_Camera, this->hittestparams_)) {
-        auto gamestate = controller_->GetWorld()->GetGameState<ACatanGameState>();
-        auto closestcorner = gamestate->GetBoardManager()->ClosestCorner(hitresult.ImpactPoint);
+    // Apply a bit of "stickiness" to the current corner. Only switch corners if the new one is at least 50% better than the old one
+    auto olddist = (closestcorner_ - intersection).SizeSquared();
+    auto newdist = (closestcorner - intersection).SizeSquared();
+    if (newdist < (olddist * 0.5f)) {
+        closestcorner_ = closestcorner;
         settlement_->SetActorLocation(closestcorner);
-        /*auto mappiece = dynamic_cast<AMapPiece*>(hitresult.Actor.Get());
-        auto hexCoords = mappiece->GetCoordinates();
-        auto corner = HexUtils::GetCorner(hexCoords, 0);
-        auto hexworld = FVector(PointOrientation.TransformVector(HexUtils::AxialCoord(hexCoords)) * 110, 0);
-        corner += hexworld;
-        settlement_->SetActorLocation(corner);*/
     }
 }
 

@@ -18,6 +18,8 @@ public:
 private:
     APlayerController* controller_;
     ASettlement* settlement_;
+    FVector closestcorner_;
     FCollisionQueryParams hittestparams_;
+    const float groundplaneheight_ = 2.63f;
 };
 
