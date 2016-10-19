@@ -40,12 +40,37 @@ FVector HexUtils::GetEdge(const FVector& hex, int direction)
     return (neighbor + hex) / 2;
 }
 
-FVector HexUtils::GetCorner(const FVector & hex, int direction)
+FVector HexUtils::GetCornerPosition(const FVector & hex, int direction)
 {
     auto angle_deg = 60 * direction + 30;
     auto angle_rad = PI / 180 * angle_deg;
     return FVector(hex.X + AHexagonTile::Size * cos(angle_rad),
                  hex.Y + AHexagonTile::Size * sin(angle_rad), 0);
+}
+
+FVector HexUtils::GetCornerCube(int direction)
+{
+    const float onethird = 1.f / 3.f;
+    const float twothird = 2.f / 3.f;
+
+    switch (direction) {
+    case 0:
+        return FVector(onethird, -twothird, onethird);
+    case 5:
+        return FVector(twothird, -onethird, -onethird);
+    case 4:
+        return FVector(onethird, onethird, -twothird);
+    case 3:
+        return FVector(-onethird, twothird, -onethird);
+    case 2:
+        return FVector(-twothird, onethird, onethird);
+    case 1:
+        return FVector(-onethird, -onethird, twothird);
+    default:
+        // UE_LOG(Error, ELogVerbosity::Error, TEXT("HexUtils::GetCornerAxial unknown direction"));
+        return FVector::ZeroVector;
+        break;
+    }
 }
 
 HexUtils::HexUtils()

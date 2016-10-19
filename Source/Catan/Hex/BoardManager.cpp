@@ -8,11 +8,12 @@
 #include "BoardManager.h"
 #include "HexagonTile.h"
 #include "Road.h"
-#include "Orientation.h"
 #include "HexUtils.h"
+#include "CatanGameState.h"
 
-BoardManager::BoardManager(long long seed)
+BoardManager::BoardManager(long long seed, ACatanGameState* gamestate)
 {
+    gamestate_ = gamestate;
     auto rand = std::default_random_engine(seed);
     RandomizeResources(rand);
     RandomizeNumberTokens(rand);
@@ -56,7 +57,7 @@ void BoardManager::BuildMap(UWorld* world)
             {
                 tile->SetDiceRollValue(numbertokens_[number_token_index++]);
             }
-            tiles_[cubecoordinate] = tile;
+            gamestate_->tiles_[cubecoordinate] = tile;
 
             BuildRoads(*tile, world);
         }
@@ -70,7 +71,7 @@ AHexagonTile* BoardManager::ClosestTile(const FVector& position) const
 {
     AHexagonTile* closesttile = nullptr;
     float closestdistance = std::numeric_limits<float>::max();
-    for (auto& tile : this->tiles_) {
+    for (auto& tile : gamestate_->tiles_) {
         auto dist = (tile.second->GetActorLocation() - position).Size();
         if (dist < closestdistance) {
             closestdistance = dist;
@@ -89,19 +90,19 @@ ARoad* BoardManager::ClosestRoad(const FVector& position) const
 FVector BoardManager::ClosestCorner(const FVector& position) const
 {
     auto hextile = ClosestTile(position);
-
-    FVector closestcorner;
+    
     float closestdistance = std::numeric_limits<float>::max();
+    int closestcornerdirection;
     for (int i = 0; i < 6; ++i) {
-        FVector corner = HexUtils::GetCorner(hextile->GetActorLocation(), i);
+        FVector corner = HexUtils::GetCornerPosition(hextile->GetActorLocation(), i);
         auto dist = (corner - position).Size();
         if (dist < closestdistance) {
             closestdistance = dist;
-            closestcorner = corner;
+            closestcornerdirection = i;
         }
     }
 
-    return closestcorner;
+    return hextile->GetCoordinates() + HexUtils::GetCornerCube(closestcornerdirection);
 }
 
 void BoardManager::RandomizeResources(std::default_random_engine& rand)
@@ -156,13 +157,13 @@ void BoardManager::BuildRoads(const AHexagonTile& tile, UWorld* world)
     for (int i = 0; i < 6; ++i)
     {
         auto address = HexUtils::GetEdge(tile.GetCoordinates(), i);
-        if (roads_.find(address) == roads_.end())
+        if (gamestate_->roads_.find(address) == gamestate_->roads_.end())
         {
             FVector2D translation = PointOrientation.TransformVector(HexUtils::AxialCoord(address));
             translation.X = translation.X * AHexagonTile::Size;
             translation.Y = translation.Y * AHexagonTile::Size;
             auto road = world->SpawnActor<ARoad>(ARoad::StaticClass(), FVector(translation, 0), FRotator(0, -60 * i, 0));
-            roads_[address] = road;
+            gamestate_->roads_[address] = road;
         }
     }
 }

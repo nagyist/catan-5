@@ -2,8 +2,8 @@
 #include <UnrealMathUtility.h>
 #include "../Map/Settlement.h"
 #include "../Map/MapPiece.h"
+#include "../Hex/HexagonTile.h"
 #include "../Hex/HexUtils.h"
-#include "../Hex/Orientation.h"
 #include "../CatanGameState.h"
 #include "PlaceSettlementAction.h"
 
@@ -25,9 +25,12 @@ void PlaceSettlementAction::OnEnterAction()
 
 void PlaceSettlementAction::DoAction()
 {
-    settlement_ = controller_->GetWorld()->SpawnActor<ASettlement>(ASettlement::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
-    this->hittestparams_.ClearIgnoredComponents();
-    this->hittestparams_.AddIgnoredActor(settlement_);
+    auto gamestate = controller_->GetWorld()->GetGameState<ACatanGameState>();
+    if (gamestate->PlaceSettlement(settlement_)) {
+        settlement_ = controller_->GetWorld()->SpawnActor<ASettlement>(ASettlement::StaticClass(), settlement_->GetActorLocation(), FRotator::ZeroRotator);
+        this->hittestparams_.ClearIgnoredComponents();
+        this->hittestparams_.AddIgnoredActor(settlement_);
+    }
 }
 
 void PlaceSettlementAction::OnMouseMove()
@@ -40,14 +43,17 @@ void PlaceSettlementAction::OnMouseMove()
     FVector traceend = cursorlocation + cursordirection * 10000;
     auto intersection = FMath::LinePlaneIntersection(cursorlocation, traceend, groundplane);
     auto gamestate = controller_->GetWorld()->GetGameState<ACatanGameState>();
-    auto closestcorner = gamestate->GetBoardManager()->ClosestCorner(intersection);
+    auto cornercubecoords = gamestate->GetBoardManager()->ClosestCorner(intersection);
+    auto cornerworldposition = FVector(PointOrientation.TransformVector(HexUtils::AxialCoord(cornercubecoords)), 0) * AHexagonTile::Size;
 
     // Apply a bit of "stickiness" to the current corner. Only switch corners if the new one is at least 50% better than the old one
     auto olddist = (closestcorner_ - intersection).SizeSquared();
-    auto newdist = (closestcorner - intersection).SizeSquared();
+    auto newdist = (cornerworldposition - intersection).SizeSquared();
     if (newdist < (olddist * 0.5f)) {
-        closestcorner_ = closestcorner;
-        settlement_->SetActorLocation(closestcorner);
+        UE_LOG(LogTemp, Verbose, TEXT("New Corner (Old Dist: %d) (New Dist: %d) %s"), olddist, newdist, *cornerworldposition.ToString());
+        closestcorner_ = cornerworldposition;
+        settlement_->SetActorLocation(cornerworldposition);
+        settlement_->SetCoordinates(cornercubecoords);
     }
 }
 
